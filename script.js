@@ -1,97 +1,52 @@
-const malla = document.getElementById("malla");
-
-const asignaturas = [
+// ... semestres anteriores
   {
-    semestre: "Primer Semestre",
+    semestre: "Séptimo Semestre - Mención Promoción de la Salud",
     ramos: [
-      { id: "Parv111", nombre: "Parv 111 - Bases Socio Antropológicas y Filosóficas de la Educación" },
-      { id: "Parv112", nombre: "Parv 112 - Infancia y Transformaciones de la Modernidad" },
-      { id: "Parv113", nombre: "Parv 113 - Desarrollo Personal, Emocionalidad Autorregulación" },
-      { id: "Parv114", nombre: "Parv 114 - Lenguaje y Cognición" },
-      { id: "Parv115", nombre: "Parv 115 - Fundamentos y Práctica de la Educación Parvularia" },
-      { id: "Parv116", nombre: "Parv 116 - Sensibilidad, Creatividad y Lenguajes Expresivos" },
-      { id: "Parv117", nombre: "Parv 117 - Biología Humana" },
+      { id: "PDS411", nombre: "Parv-PDS 411 - Factores Protectores Psicosociales" },
+      { id: "PDS412", nombre: "Parv-PDS 412 - Motricidad y Vida Saludable" },
+      { id: "PDS413", nombre: "Parv-PDS - Alimentación Saludable en la Niñez" },
+      { id: "PDS414", nombre: "Parv-PDS 414 - Tesis I" },
+      { id: "PDS415", nombre: "Parv-PDS 415 - Práctica Mención Promoción de la Salud I" },
     ]
   },
-  // Puedes continuar agregando los demás semestres aquí con su misma estructura.
+  {
+    semestre: "Octavo Semestre - Mención Promoción de la Salud",
+    ramos: [
+      { id: "PDS421", nombre: "Parv-PDS 421 - Educación para la Salud en la Primera Infancia" },
+      { id: "PDS422", nombre: "Parv-PDS 422 - Contextos Educativos Saludables y Sostenibles" },
+      { id: "PDS423", nombre: "Parv-PDS 423 - Tesis II" },
+      { id: "PDS424", nombre: "Parv-PDS 424 - Práctica Mención Promoción de la Salud II" },
+      { id: "PDS425", nombre: "Parv-PDS 425 - Taller de Integración Perfil UV II" },
+    ]
+  },
+  {
+    semestre: "Séptimo Semestre - Mención Comunicación y Trastornos del Lenguaje",
+    ramos: [
+      { id: "CTL411", nombre: "Parv-CTL 411 - Bases Anatómicas del Crecimiento y Desarrollo" },
+      { id: "CTL412", nombre: "Parv-CTL 412 - Evolución del Lenguaje Oral" },
+      { id: "CTL413", nombre: "Parv-CTL 413 - Evolución del Lenguaje Escrito" },
+      { id: "CTL414", nombre: "Parv-CTL 414 - Tesis I" },
+      { id: "CTL415", nombre: "Parv-CTL 415 - Práctica Mención Comunicación y Trastornos del Lenguaje I" },
+    ]
+  },
+  {
+    semestre: "Octavo Semestre - Mención Comunicación y Trastornos del Lenguaje",
+    ramos: [
+      { id: "CTL421", nombre: "Parv-CTL 421 - Trastornos del Lenguaje" },
+      { id: "CTL422", nombre: "Parv-CTL 422 - Contextos Educativos Saludables y Sostenibles" },
+      { id: "CTL423", nombre: "Parv-CTL 423 - Tesis II" },
+      { id: "CTL424", nombre: "Parv-CTL 424 - Práctica Mención Comunicación y Trastornos del Lenguaje II" },
+      { id: "CTL425", nombre: "Parv-CTL 425 - Taller de Integración Perfil UV II" },
+    ]
+  },
+  {
+    semestre: "Noveno Semestre - Práctica Profesional",
+    ramos: [
+      { id: "Parv511", nombre: "Parv 511 - Práctica Profesional" },
+      { id: "Parv512", nombre: "Parv 512 - Taller Práctica Profesional" },
+      { id: "Parv513", nombre: "Parv 513 - Taller de Integración Perfil UV II" },
+    ]
+  }
 ];
 
-const requisitos = {
-  Parv124: ["Parv116"],
-  Parv125: ["Parv115"],
-  Parv126: ["Parv117"],
-  Parv212: ["Parv127"],
-  Parv214: ["Parv124"],
-  Parv215: ["Parv125"],
-  Parv216: ["Parv115"],
-  Parv221: ["Parv211"],
-  Parv224: ["Parv211"],
-  Parv227: ["Parv215"],
-  Parv228: ["Parv217"],
-  Parv314: ["Parv221"],
-  Parv315: ["Parv221"],
-  Parv316: ["Parv226"],
-  Parv317: ["Parv227"],
-  Parv324: ["Parv221"],
-  Parv325: ["Parv317"],
-  "PARV-PDS423": ["PARV-PDS414"],
-  "PARV-PDS424": ["PARV-PDS415"],
-  "PARV-PDS425": ["Parv327"],
-  "PARV-CTL423": ["Parv414"],
-  "PARV-CTL424": ["PARV-CTL415"],
-  "PARV-CTL425": ["Parv327"],
-  Parv511: ["licenciatura"],
-  Parv512: ["licenciatura"],
-  Parv513: ["PARV-PDS425", "PARV-CTL425"]
-};
-
-function crearMalla() {
-  asignaturas.forEach(bloque => {
-    const div = document.createElement("div");
-    div.className = "semestre";
-
-    const h2 = document.createElement("h2");
-    h2.textContent = bloque.semestre;
-    div.appendChild(h2);
-
-    bloque.ramos.forEach(ramo => {
-      const ramoDiv = document.createElement("div");
-      ramoDiv.className = "ramo";
-      ramoDiv.textContent = ramo.nombre;
-      ramoDiv.id = ramo.id;
-
-      if (requisitos[ramo.id]) {
-        ramoDiv.classList.add("bloqueado");
-      }
-
-      ramoDiv.addEventListener("click", () => {
-        if (ramoDiv.classList.contains("bloqueado")) return;
-
-        ramoDiv.classList.toggle("aprobado");
-        desbloquearRamos();
-      });
-
-      div.appendChild(ramoDiv);
-    });
-
-    malla.appendChild(div);
-  });
-}
-
-function desbloquearRamos() {
-  Object.entries(requisitos).forEach(([id, prereqs]) => {
-    const ramo = document.getElementById(id);
-    if (!ramo) return;
-
-    const cumplidos = prereqs.every(req => {
-      const el = document.getElementById(req);
-      return el && el.classList.contains("aprobado");
-    });
-
-    if (cumplidos) {
-      ramo.classList.remove("bloqueado");
-    }
-  });
-}
-
-crearMalla();
+// (El resto del script permanece igual)
