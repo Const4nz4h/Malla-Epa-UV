@@ -48,5 +48,3 @@
     ]
   }
 ];
-
-// (El resto del script permanece igual)
