@@ -1,50 +1,52 @@
-// ... semestres anteriores
+const malla = [
   {
-    semestre: "Séptimo Semestre - Mención Promoción de la Salud",
+    semestre: "Primer Semestre",
     ramos: [
-      { id: "PDS411", nombre: "Parv-PDS 411 - Factores Protectores Psicosociales" },
-      { id: "PDS412", nombre: "Parv-PDS 412 - Motricidad y Vida Saludable" },
-      { id: "PDS413", nombre: "Parv-PDS - Alimentación Saludable en la Niñez" },
-      { id: "PDS414", nombre: "Parv-PDS 414 - Tesis I" },
-      { id: "PDS415", nombre: "Parv-PDS 415 - Práctica Mención Promoción de la Salud I" },
+      { id: "Parv111", nombre: "Parv 111 - Bases Socio Antropológicas y Filosóficas de la Educación" },
+      { id: "Parv112", nombre: "Parv 112 - Infancia y Transformaciones de la Modernidad" },
+      { id: "Parv113", nombre: "Parv 113 - Desarrollo Personal, Emocionalidad y Autorregulación" },
+      { id: "Parv114", nombre: "Parv 114 - Lenguaje y Cognición" },
+      { id: "Parv115", nombre: "Parv 115 - Fundamentos y Práctica de la Educación Parvularia" },
+      { id: "Parv116", nombre: "Parv 116 - Sensibilidad, Creatividad y Lenguajes Expresivos" },
+      { id: "Parv117", nombre: "Parv 117 - Biología Humana" },
     ]
   },
   {
-    semestre: "Octavo Semestre - Mención Promoción de la Salud",
+    semestre: "Segundo Semestre",
     ramos: [
-      { id: "PDS421", nombre: "Parv-PDS 421 - Educación para la Salud en la Primera Infancia" },
-      { id: "PDS422", nombre: "Parv-PDS 422 - Contextos Educativos Saludables y Sostenibles" },
-      { id: "PDS423", nombre: "Parv-PDS 423 - Tesis II" },
-      { id: "PDS424", nombre: "Parv-PDS 424 - Práctica Mención Promoción de la Salud II" },
-      { id: "PDS425", nombre: "Parv-PDS 425 - Taller de Integración Perfil UV II" },
+      { id: "Parv121", nombre: "Parv 121 - Teorías de la Educación y Corrientes Pedagógicas Contemporáneas" },
+      { id: "Parv122", nombre: "Parv 122 - Ética, Valores y Ciudadanía" },
+      { id: "Parv123", nombre: "Parv 123 - Construcción de la Identidad Profesional" },
+      { id: "Parv124", nombre: "Parv 124 - Lenguajes Artísticos" },
+      { id: "Parv125", nombre: "Parv 125 - Profesionalismo y Práctica Inicial I" },
+      { id: "Parv126", nombre: "Parv 126 - Bases Neurobiológicas del Ser Humano" },
+      { id: "Parv127", nombre: "Parv 127 - Psicología General y del Desarrollo" },
     ]
   },
-  {
-    semestre: "Séptimo Semestre - Mención Comunicación y Trastornos del Lenguaje",
-    ramos: [
-      { id: "CTL411", nombre: "Parv-CTL 411 - Bases Anatómicas del Crecimiento y Desarrollo" },
-      { id: "CTL412", nombre: "Parv-CTL 412 - Evolución del Lenguaje Oral" },
-      { id: "CTL413", nombre: "Parv-CTL 413 - Evolución del Lenguaje Escrito" },
-      { id: "CTL414", nombre: "Parv-CTL 414 - Tesis I" },
-      { id: "CTL415", nombre: "Parv-CTL 415 - Práctica Mención Comunicación y Trastornos del Lenguaje I" },
-    ]
-  },
-  {
-    semestre: "Octavo Semestre - Mención Comunicación y Trastornos del Lenguaje",
-    ramos: [
-      { id: "CTL421", nombre: "Parv-CTL 421 - Trastornos del Lenguaje" },
-      { id: "CTL422", nombre: "Parv-CTL 422 - Contextos Educativos Saludables y Sostenibles" },
-      { id: "CTL423", nombre: "Parv-CTL 423 - Tesis II" },
-      { id: "CTL424", nombre: "Parv-CTL 424 - Práctica Mención Comunicación y Trastornos del Lenguaje II" },
-      { id: "CTL425", nombre: "Parv-CTL 425 - Taller de Integración Perfil UV II" },
-    ]
-  },
-  {
-    semestre: "Noveno Semestre - Práctica Profesional",
-    ramos: [
-      { id: "Parv511", nombre: "Parv 511 - Práctica Profesional" },
-      { id: "Parv512", nombre: "Parv 512 - Taller Práctica Profesional" },
-      { id: "Parv513", nombre: "Parv 513 - Taller de Integración Perfil UV II" },
-    ]
-  }
+  // Agrega aquí los semestres restantes...
+  // Como ya hiciste para séptimo, octavo y noveno, colócalos en esta lista también.
 ];
+
+// Renderizar la malla
+window.addEventListener("DOMContentLoaded", () => {
+  const contenedor = document.getElementById("malla");
+
+  malla.forEach((sem) => {
+    const semestreDiv = document.createElement("div");
+    semestreDiv.classList.add("semestre");
+
+    const titulo = document.createElement("h3");
+    titulo.textContent = sem.semestre;
+
+    semestreDiv.appendChild(titulo);
+
+    sem.ramos.forEach((ramo) => {
+      const ramoDiv = document.createElement("div");
+      ramoDiv.classList.add("ramo");
+      ramoDiv.textContent = ramo.nombre;
+      semestreDiv.appendChild(ramoDiv);
+    });
+
+    contenedor.appendChild(semestreDiv);
+  });
+});
