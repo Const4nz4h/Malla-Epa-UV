@@ -1,184 +1,161 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Malla Curricular Interactiva</title>
-<style>
-  #malla {
-    font-family: Arial, sans-serif;
-    max-width: 900px;
-    margin: auto;
-  }
-  #anio {
-    margin-bottom: 30px;
-  }
-  .semestre {
-    border: 1px solid #2e8b57;
-    margin: 10px 0;
-    padding: 10px;
-    background-color: #e8f5e9;
-  }
-  .ramo {
-    padding: 6px 10px;
-    margin: 4px 0;
-    cursor: pointer;
-    border-radius: 5px;
-    user-select: none;
-    transition: background-color 0.3s;
-  }
-  .ramo:hover {
-    background-color: #c8e6c9;
-  }
-  .aprobado {
-    text-decoration: line-through;
-    background-color: #a5d6a7;
-    color: #2e7d32;
-  }
-  .bloqueado {
-    color: #bbb;
-    cursor: not-allowed;
-    background-color: #f0f0f0;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Malla Curricular Educación Parvularia</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f4f9f8;
+      margin: 0;
+      padding: 1rem;
+    }
+    h2, h3, h4 {
+      color: #2c3e50;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 1rem;
+    }
+    .column {
+      flex: 0 0 auto;
+      width: 300px;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      padding: 1rem;
+    }
+    .course {
+      background-color: #d1f0da;
+      margin: 0.5rem 0;
+      padding: 0.5rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      position: relative;
+    }
+    .course.locked {
+      background-color: #f0f0f0;
+      color: #aaa;
+      cursor: not-allowed;
+    }
+    .course.locked:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: #333;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
+      white-space: pre-line;
+      z-index: 10;
+      margin-top: 4px;
+    }
+    .course.approved {
+      background-color: #9ae6b4;
+      text-decoration: line-through;
+    }
+  </style>
 </head>
 <body>
+  <h2>Malla Curricular - Educación Parvularia</h2>
+  <div class="grid" id="malla"></div>
+  <script>
+    const cursos = [
+      // Primer y Segundo Año (ya incluidos antes)...
+      { id: "311", nombre: "311 Métodos De Investigación Cuantitativa", ciclo: "3A", semestre: "S5" },
+      { id: "312", nombre: "Parv 312 Territorio, Comunidad Y Trabajo En Redes", ciclo: "3A", semestre: "S5" },
+      { id: "313", nombre: "Parv 313 Diversidades, Interculturalidades Y Perspectiva De Género", ciclo: "3A", semestre: "S5" },
+      { id: "314", nombre: "Parv 314 Didáctica Del Lenguaje Oral Y Escrito", ciclo: "3A", semestre: "S5", requisitos: ["221"] },
+      { id: "315", nombre: "Parv 315 Didáctica Para La Comprensión Del Entorno Sociocultural", ciclo: "3A", semestre: "S5", requisitos: ["221"] },
+      { id: "316", nombre: "Parv 316 Didáctica De La Motricidad Infantil", ciclo: "3A", semestre: "S5", requisitos: ["226"] },
+      { id: "317", nombre: "Parv 317 Profesionalismo Y Práctica Intermedia II", ciclo: "3A", semestre: "S5", requisitos: ["227"] },
+      { id: "321", nombre: "321 Métodos De Investigación Cualitativa", ciclo: "3A", semestre: "S6" },
+      { id: "322", nombre: "Parv 322 Proyectos Educativos", ciclo: "3A", semestre: "S6" },
+      { id: "323", nombre: "Parv 323 Tecnologías E Informática Educativa", ciclo: "3A", semestre: "S6" },
+      { id: "324", nombre: "Parv 324 Didáctica Para El Desarrollo Del Pensamiento Matemático", ciclo: "3A", semestre: "S6", requisitos: ["221"] },
+      { id: "325", nombre: "Parv 325 Profesionalismo Y Práctica Intermedia III", ciclo: "3A", semestre: "S6", requisitos: ["317"] },
+      { id: "326", nombre: "Parv 326 Diversificación De La Enseñanza", ciclo: "3A", semestre: "S6" },
+      { id: "327", nombre: "Parv 327 Taller De Integración Perfil UV I", ciclo: "3A", semestre: "S6" },
+      { id: "PDS414", nombre: "PARV-PDS 414 Tesis I", ciclo: "4A-PDS", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "PDS415", nombre: "PARV-PDS 415 Práctica Mención Promoción De La Salud I", ciclo: "4A-PDS", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "PDS411", nombre: "PARV-PDS 411 Factores Protectores Psicosociales", ciclo: "4A-PDS", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "PDS412", nombre: "PARV-PDS 412 Motricidad Y Vida Saludable", ciclo: "4A-PDS", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "PDSALIM", nombre: "PARV-PDS Alimentación Saludable En La Niñez", ciclo: "4A-PDS", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "PDS421", nombre: "PARV-PDS 421 Educación Para La Salud En La Primera Infancia", ciclo: "4A-PDS", semestre: "S8", requisitos: ["COMMON"] },
+      { id: "PDS422", nombre: "PARV-PDS 422 Contextos Educativos Saludables Y Sostenibles", ciclo: "4A-PDS", semestre: "S8", requisitos: ["COMMON"] },
+      { id: "PDS423", nombre: "PARV-PDS 423 Tesis II", ciclo: "4A-PDS", semestre: "S8", requisitos: ["PDS414"] },
+      { id: "PDS424", nombre: "PARV-PDS 424 Práctica Mención Promoción De La Salud II", ciclo: "4A-PDS", semestre: "S8", requisitos: ["PDS415"] },
+      { id: "PDS425", nombre: "PARV-PDS 425 Taller De Integración Perfil UV II", ciclo: "4A-PDS", semestre: "S8", requisitos: ["327"] },
+      { id: "CTL411", nombre: "PARV-CTL 411 Bases Anatómicas Del Crecimiento", ciclo: "4A-CTL", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "CTL412", nombre: "PARV-CTL 412 Evolución Del Lenguaje Oral", ciclo: "4A-CTL", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "CTL413", nombre: "PARV-CTL 413 Evolución Del Lenguaje Escrito", ciclo: "4A-CTL", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "CTL414", nombre: "PARV-CTL 414 Tesis I", ciclo: "4A-CTL", semestre: "S7", requisitos: ["COMMON"] },
+      { id: "CTL415", nombre: "PARV-CTL 415 Práctica Mención Comunicación Y Trastornos Del Lenguaje I", ciclo: "4A-CTL", semestre: "S7" },
+      { id: "CTL421", nombre: "PARV-CTL 421 Trastornos Del Lenguaje", ciclo: "4A-CTL", semestre: "S8", requisitos: ["COMMON"] },
+      { id: "CTL422", nombre: "PARV-CTL 422 Contextos Educativos Saludables Y Sostenibles", ciclo: "4A-CTL", semestre: "S8", requisitos: ["COMMON"] },
+      { id: "CTL423", nombre: "PARV-CTL 423 Tesis II", ciclo: "4A-CTL", semestre: "S8", requisitos: ["CTL414"] },
+      { id: "CTL424", nombre: "PARV-CTL 424 Práctica Mención Comunicación Trastornos Del Lenguaje II", ciclo: "4A-CTL", semestre: "S8", requisitos: ["CTL415"] },
+      { id: "CTL425", nombre: "PARV-CTL 425 Taller De Integración Perfil UV II", ciclo: "4A-CTL", semestre: "S8", requisitos: ["327"] },
+      { id: "511", nombre: "Parv 511 Práctica Profesional", ciclo: "5A", semestre: "S9", requisitos: ["PDS425", "CTL425"] },
+      { id: "512", nombre: "Parv 512 Taller Práctica Profesional", ciclo: "5A", semestre: "S9", requisitos: ["PDS425", "CTL425"] },
+      { id: "513", nombre: "Parv 513 Taller De Integración Perfil UV II", ciclo: "5A", semestre: "S9", requisitos: ["PDS425", "CTL425"] }
+    ];
 
-<h1>Malla Curricular Interactiva</h1>
-<div id="malla"></div>
-
-<script>
-const malla = [
-  {
-    anio: "Primer Año",
-    semestres: [
-      {
-        semestre: "Primer Semestre",
-        ramos: [
-          { id: "Parv111", nombre: "Parv 111 - Bases Socio Antropológicas y Filosóficas de la Educación" },
-          { id: "Parv112", nombre: "Parv 112 - Infancia y Transformaciones de la Modernidad" },
-          { id: "Parv113", nombre: "Parv 113 - Desarrollo Personal, Emocionalidad y Autorregulación" },
-          { id: "Parv114", nombre: "Parv 114 - Lenguaje y Cognición" },
-          { id: "Parv115", nombre: "Parv 115 - Fundamentos y Práctica de la Educación Parvularia" },
-          { id: "Parv116", nombre: "Parv 116 - Sensibilidad, Creatividad y Lenguajes Expresivos" },
-          { id: "Parv117", nombre: "Parv 117 - Biología Humana" },
-        ]
-      },
-      {
-        semestre: "Segundo Semestre",
-        ramos: [
-          { id: "Parv121", nombre: "Parv 121 - Teorías de la Educación y Corrientes Pedagógicas Contemporáneas" },
-          { id: "Parv122", nombre: "Parv 122 - Ética, Valores y Ciudadanía" },
-          { id: "Parv123", nombre: "Parv 123 - Construcción de la Identidad Profesional" },
-          { id: "Parv124", nombre: "Parv 124 - Lenguajes Artísticos", requisitos: ["Parv116"] },
-          { id: "Parv125", nombre: "Parv 125 - Profesionalismo y Práctica Inicial I", requisitos: ["Parv115"] },
-          { id: "Parv126", nombre: "Parv 126 - Bases Neurobiológicas del Ser Humano", requisitos: ["Parv117"] },
-          { id: "Parv127", nombre: "Parv 127 - Psicología General y del Desarrollo" },
-        ]
-      },
-    ]
-  },
-  {
-    anio: "Segundo Año",
-    semestres: [
-      {
-        semestre: "Tercer Semestre",
-        ramos: [
-          { id: "Parv211", nombre: "Parv 211 - Currículum en Educación" },
-          { id: "Parv212", nombre: "Parv 212 - Psicología del Aprendizaje", requisitos: ["Parv127"] },
-          { id: "Parv213", nombre: "Parv 213 - Liderazgo y Gestión de Organizaciones" },
-          { id: "Parv214", nombre: "Parv 214 - Didáctica de los Lenguajes Artísticos", requisitos: ["Parv124"] },
-          { id: "Parv216", nombre: "Parv 216 - Didáctica del Desarrollo Personal y Oscila", requisitos: ["Parv115"] },
-          { id: "Parv215", nombre: "Parv 215 - Profesionalismo y Práctica Inicial II", requisitos: ["Parv125"] },
-          { id: "Parv217", nombre: "Parv 217 - Salud y Desarrollo Humano" },
-          { id: "Parv218", nombre: "Parv 218 - Taller de Nivelación de Inglés" },
-        ]
-      },
-      {
-        semestre: "Cuarto Semestre",
-        ramos: [
-          { id: "Parv221", nombre: "Parv 221 - Evaluación Educativa", requisitos: ["Parv211"] },
-          { id: "Parv222", nombre: "Parv 222 - Lenguaje y Comunicación" },
-          { id: "Parv223", nombre: "Parv 223 - Familia y Derechos de Familia" },
-          { id: "Parv224", nombre: "Parv 224 - Didáctica para la Comprensión del Entorno Natural", requisitos: ["Parv211"] },
-          { id: "Parv226", nombre: "Parv 226 - Motricidad Infantil" },
-          { id: "Parv227", nombre: "Parv 227 - Profesionalismo y Práctica Intermedia I", requisitos: ["Parv215"] },
-          { id: "Parv225", nombre: "Parv 225 - Salud en la Primera Infancia" },
-          { id: "Parv228", nombre: "Parv 228 - Promoción de la Salud", requisitos: ["Parv217"] },
-        ]
-      },
-    ]
-  },
-  // Más años y semestres aquí ...
-];
-
-// Set para almacenar ramos aprobados
-const aprobados = new Set();
-
-// Función que verifica prerrequisitos
-function puedeAprobar(ramo) {
-  if (!ramo.requisitos) return true;
-  return ramo.requisitos.every(req => aprobados.has(req));
-}
-
-// Renderizamos la malla
-function renderMalla() {
-  const contenedor = document.getElementById("malla");
-  contenedor.innerHTML = "";
-
-  malla.forEach(anio => {
-    const anioDiv = document.createElement("div");
-    anioDiv.id = "anio";
-
-    const anioTitulo = document.createElement("h2");
-    anioTitulo.textContent = anio.anio;
-    anioDiv.appendChild(anioTitulo);
-
-    anio.semestres.forEach(sem => {
-      const semestreDiv = document.createElement("div");
-      semestreDiv.classList.add("semestre");
-
-      const titulo = document.createElement("h3");
-      titulo.textContent = sem.semestre;
-      semestreDiv.appendChild(titulo);
-
-      sem.ramos.forEach(ramo => {
-        const ramoDiv = document.createElement("div");
-        ramoDiv.classList.add("ramo");
-        ramoDiv.textContent = ramo.nombre;
-        ramoDiv.dataset.id = ramo.id;
-
-        if (aprobados.has(ramo.id)) {
-          ramoDiv.classList.add("aprobado");
-          ramoDiv.title = "Ramo aprobado. Haz clic para desmarcar.";
-        } else if (!puedeAprobar(ramo)) {
-          ramoDiv.classList.add("bloqueado");
-          ramoDiv.title = "Debe aprobar prerrequisitos primero";
-        } else {
-          ramoDiv.title = "Haz clic para aprobar";
-        }
-
-        ramoDiv.addEventListener("click", () => {
-          if (aprobados.has(ramo.id)) {
-            aprobados.delete(ramo.id);
-          } else if (puedeAprobar(ramo)) {
-            aprobados.add(ramo.id);
-          }
-          renderMalla();
-        });
-
-        semestreDiv.appendChild(ramoDiv);
-      });
-
-      anioDiv.appendChild(semestreDiv);
+    const aprobados = JSON.parse(localStorage.getItem("aprobados") || "[]");
+    const malla = document.getElementById("malla");
+    const agrupados = {};
+    cursos.forEach(curso => {
+      const key = curso.ciclo + curso.semestre;
+      if (!agrupados[key]) agrupados[key] = [];
+      agrupados[key].push(curso);
     });
 
-    contenedor.appendChild(anioDiv);
-  });
-}
+    Object.keys(agrupados).forEach(key => {
+      const columna = document.createElement("div");
+      columna.className = "column";
+      columna.innerHTML = `<h3>${key.replace(/(\d)A/, '$1° Año')}</h3><h4>Semestre ${key.slice(-1)}</h4>`;
+      agrupados[key].forEach(curso => {
+        const div = document.createElement("div");
+        div.className = "course";
+        div.textContent = curso.nombre;
+        div.dataset.id = curso.id;
+        div.addEventListener("click", () => {
+          if (div.classList.contains("locked")) return;
+          const idx = aprobados.indexOf(curso.id);
+          if (idx >= 0) aprobados.splice(idx, 1);
+          else aprobados.push(curso.id);
+          localStorage.setItem("aprobados", JSON.stringify(aprobados));
+          render();
+        });
+        columna.appendChild(div);
+      });
+      malla.appendChild(columna);
+    });
 
-document.addEventListener("DOMContentLoaded", renderMalla);
-</script>
-
+    function render() {
+      document.querySelectorAll(".course").forEach(div => {
+        const curso = cursos.find(c => c.id === div.dataset.id);
+        const faltan = (curso.requisitos || []).filter(r => r === "COMMON" ? !cursos.filter(c2 => !c2.requisitos?.includes("COMMON") && aprobados.includes(c2.id)).length : !aprobados.includes(r));
+        div.classList.remove("locked", "approved");
+        div.removeAttribute("data-tooltip");
+        if (aprobados.includes(curso.id)) {
+          div.classList.add("approved");
+        } else if (faltan.length > 0) {
+          div.classList.add("locked");
+          div.dataset.tooltip = "Requiere:\n" + faltan.map(r => {
+            const req = cursos.find(c => c.id === r);
+            return req ? req.nombre : r;
+          }).join("\n");
+        }
+      });
+    }
+    render();
+  </script>
 </body>
 </html>
